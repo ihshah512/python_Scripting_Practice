@@ -1,0 +1,2 @@
+Found frequency: 12345
+Found frequency: 1478
