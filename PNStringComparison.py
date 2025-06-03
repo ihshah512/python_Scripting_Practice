@@ -1,49 +1,37 @@
-import sys
 import re
+import sys
 
-def check_unique_abc_values(file_path):
-    with open(file_path, 'r') as file:
-        lines = file.readlines()
+def check_decoyhop_duplicates(filename):
+    value_set = set()
+    start_collecting = False
 
-    enabled_found = False
-    value_set = set()# choose set becauese we want unique keys
-    #skip all lines untill you see ENABLED string
-    for line_number, line in enumerate(lines, start=1):
-        if not enabled_found:
-            if "ENABLED" in line:
-                enabled_found = True
-            continue  # Skip all lines before ENABLED
+    # Updated regex: DecoyHop[NUMBER]: VALUE
+    pattern = re.compile(r'DecoyHop\[\d+\]:\s*(\S+)')
 
-        if "DecoyHop[" in line:
-            try:
-                # Use regex to extract DecoyHop number and value
-                match = re.search(r'DecoyHop\[(\d+)\]:\s*(.*)', line)
+    try:
+        with open(filename, 'r') as file:
+            counter = 0
+            for line_num, line in enumerate(file, 1):
+                match = pattern.search(line)
                 if match:
-                    hop_number = match.group(1)
-                    value_part = match.group(2).strip()
-
+                    counter += 1
+                    value_part = match.group(1)
+                    #print(f"{value_part}")
+                    if not start_collecting:
+                        start_collecting = True
                     if value_part in value_set:
-                        sys.stderr.write(
-                            f"Error: Duplicate value found on line {line_number} "
-                            f"at DecoyHop[{hop_number}]: {value_part}\n"
-                        )
-                        sys.exit(1)
-
+                        print(f"Error: Duplicate value_part '{value_part}' found at line {line_num}")
+                        return False
                     value_set.add(value_part)
 
-            except IndexError:
-                continue  # Skip malformed lines
+        print(f"Script finished successfully. No duplicates found. All {counter} decoys accounted for")
+        return True
 
-    # If all values are unique
-    print("All values are unique. List of unique values:")
-    key = 2
-    for value in value_set:
-        print(f"DecoyHop {key} : {value}")
-        key +=1
-
-
+    except FileNotFoundError:
+        print(f"Error: File '{filename}' not found.")
+        return False
 
 
 # Example usage:
 myFile = 'pn.txt'
-check_unique_abc_values(myFile)
+check_decoyhop_duplicates(myFile)
