@@ -20,11 +20,15 @@ def check_decoyhop_duplicates(filename):
                     if not start_collecting:
                         start_collecting = True
                     if value_part in value_set:
-                        print(f"Error: Duplicate value_part '{value_part}' found at line {line_num}")
+                        print(f"\n ❌ Error: Duplicate value_part '{value_part}' found at line {line_num}")
                         return False
                     value_set.add(value_part)
 
         print(f"Script finished successfully. No duplicates found. All {counter} decoys accounted for")
+        key = 1
+        for values in value_set:
+            print(f" {key} {values}")
+            key+=1
         return True
 
     except FileNotFoundError:
