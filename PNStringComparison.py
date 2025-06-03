@@ -20,7 +20,7 @@ def check_decoyhop_duplicates(filename):
                     if not start_collecting:
                         start_collecting = True
                     if value_part in value_set:
-                        print(f"\n ❌ Error: Duplicate value_part '{value_part}' found at line {line_num}")
+                        print(f"\n ❌ Error: Duplicate value_part '{value_part}' found at line {line_num}", file=sys.stderr)
                         return False
                     value_set.add(value_part)
 
